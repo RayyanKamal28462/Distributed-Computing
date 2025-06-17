@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weight loss Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculate Weight Loss</h1>
+        <form id="weightLossForm">
+            <label for="weight">Weight (kg):</label>
+            <input type="text" id="weight" name="weight" required>
+            <label for="duration">How long you have walk? (minutes):</label>
+            <input type="text" id="duration" name="duration" required>
+            <button type="submit">Calculate Weight Loss</button>
+        </form>
+        <p id="result"></p>
+    </div>
+    <script>
+        document.getElementById("weightLossForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const weight = document.getElementById("weight").value;
+            const duration = document.getElementById("duration").value;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8004/search", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        document.getElementById("result").innerText = xhr.responseText;
+                    } else {
+                        document.getElementById("result").innerText = "Request failed. Please try again later.";
+                    }
+                }
+            };
+            xhr.onerror = function() {
+                document.getElementById("result").innerText = "Request failed.";
+            };
+            xhr.send(`weight=${weight}&duration=${duration}`);
+        });
+    </script>
+</body>
+</html>
